@@ -2,8 +2,6 @@ use std::{
     fs::File,
     io::BufReader,
     io::BufRead,
-    vec::Vec,
-    cmp,
     collections::BinaryHeap,
 };
 
@@ -31,11 +29,14 @@ fn main() {
         }
     }
     
-    let mut result = 0;
+    let mut total_calories = 0;
+    let mut c = 0;
     while calories.len() > 0 {
-        result = result + -1 * calories.pop().unwrap();
-        println!("Calories: {result}")
+        c = -1 * calories.pop().unwrap();
+        total_calories = total_calories + c;
+        
     }
-    // println!("{result}");
+    println!("Max calories per elf: {c}");
+    println!("Total calories: {total_calories}");
 
 }
