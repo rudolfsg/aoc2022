@@ -155,6 +155,98 @@ fn day3() {
     println!("Total priority: {total_priority}")
 }
 
+fn day4() {
+    let reader = load_file("src/day4_input.txt");
+    let mut full_overlaps = 0; 
+    let mut partial_overlaps: i32 = 0;
+    for line in reader.lines() {
+        match line {
+            Ok(val) => {
+                let chunks: Vec<&str> = val.split(',').collect();
+                let first: Vec<i32> = chunks[0].split('-').map(|s| s.parse().unwrap()).collect();
+                let second: Vec<i32> = chunks[1].split('-').map(|s| s.parse().unwrap()).collect();
+                
+                if (first[0] >= second[0] && first[1] <= second[1]) || (first[0] <= second[0] && first[1] >= second[1]) {
+                    full_overlaps += 1;
+                }
+                else if (first[0] >= second[0] && first[1] >= second[1] && first[0] <= second[1]) ||
+                        (first[0] <= second[0] && first[1] <= second[1] && first[1] >= second[0])  {
+                    partial_overlaps += 1;
+                }
+            },
+            Err(e) => println!("{e}")
+        }
+    }
+    println!("Full overlaps: {full_overlaps}");
+    println!("Total overlaps: {}", full_overlaps + partial_overlaps);
+}
+
+fn day5() {
+    let reader = load_file("src/day5_input.txt");
+
+    let mut stacks = Vec::new(); 
+    let num_stacks = 9;
+    let mut is_initialised: bool = false; 
+
+    for i in 0..num_stacks{
+        let v: Vec<char> = Vec::new();
+        stacks.push(v);
+    }
+
+    for line in reader.lines() {
+        let val = line.unwrap();
+        if val == "" {
+            continue;
+        }
+        // initialise stacks
+        if !is_initialised {
+            for i in 0..num_stacks {
+                let c = val.as_bytes()[1 + i * 4] as char; 
+                if c == '1' {
+                    is_initialised = true; 
+                    break
+                }
+                else if c != ' ' {
+                    stacks[i].insert(0, c); 
+                }
+            
+            }
+        }
+        else {
+            // apply moves
+            // println!("{}", val);
+            let chunks: Vec<&str> = val.split(' ').collect();
+            let num_crates: i32 = chunks[1].parse().unwrap();
+            let origin: usize  = chunks[3].parse::<usize>().unwrap() - 1;
+            let destination: usize  = chunks.last().unwrap().parse::<usize>().unwrap() - 1;
+
+            // part 1
+            // for _ in 0..num_crates {
+            //     let item = stacks[origin].pop().unwrap(); 
+            //     stacks[destination].push(item); 
+            // }
+
+            // part 2
+            for i in 0..num_crates {
+                let idx = stacks[origin].len() - num_crates as usize + i as usize;
+                let item = stacks[origin][idx]; 
+                stacks[destination].push(item); 
+            }
+
+            for _ in 0..num_crates {
+                stacks[origin].pop().unwrap();
+            }
+
+        }
+        
+    }
+    println!("Top items:"); 
+    for i in 0..num_stacks {
+        let top = stacks[i].pop().unwrap();
+        print!("{top}");
+    }
+}
+
 fn main() {
     
 }
